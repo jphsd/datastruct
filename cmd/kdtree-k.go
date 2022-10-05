@@ -35,7 +35,7 @@ func main() {
 func dump(points, pts [][]float64, pt []float64, n int) {
 	width, height := 1000, 1000
 	img := image.NewRGBA(width, height, color.White)
-	xfm := g2d.ScaleAndInset(float64(width), float64(height), 10, 10, true, datastuct.Bounds(pts...))
+	xfm := g2d.ScaleAndInset(float64(width), float64(height), 10, 10, true, datastruct.Bounds(pts...))
 
 	points = xfm.Apply(points...)
 	pts = xfm.Apply(pts...)
