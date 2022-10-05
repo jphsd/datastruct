@@ -101,7 +101,7 @@ func (bn *BBNode) Decompose(id int, bb [][]float64) {
 		return
 	}
 
-	// Dice up bn.BBox by the intersection with succesive slices, biggest first.
+	// Dice up bn.BBox by the intersection with successive slices, biggest first.
 	res := []*BBNode{NewBBNode(id, bn, ibb)}
 	rem := bn.BBox
 	for {
