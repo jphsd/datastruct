@@ -158,7 +158,6 @@ func sliceMax(bb, ibb [][]float64) ([][]float64, [][]float64) {
 	}
 	d = (bb[1][1] - ibb[1][1]) * r
 	if d > max {
-		max = d
 		imax = 3
 	}
 

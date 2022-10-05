@@ -121,7 +121,6 @@ func (t *KDTree) RemoveById(id int) bool {
 	if id >= n {
 		return false
 	}
-	n--
 	pts := t.Points()
 	copy(pts[id:], pts[id+1:])
 	pts[len(pts)-1] = nil
