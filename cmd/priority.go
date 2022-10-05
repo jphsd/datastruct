@@ -1,4 +1,5 @@
 //go:build ignore
+
 package main
 
 import (
@@ -23,10 +24,10 @@ func main() {
 		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
 	}
 
-	for i:=0; i<12; i++ {
+	for i := 0; i < 12; i++ {
 		fmt.Printf("where %d right %d\n", i, l.Where(float64(i), false))
 	}
-	for i:=0; i<12; i++ {
+	for i := 0; i < 12; i++ {
 		fmt.Printf("where %d left %d\n", i, l.Where(float64(i), true))
 	}
 

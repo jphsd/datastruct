@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func Bounds(points... []float64) [][]float64 {
+func Bounds(points ...[]float64) [][]float64 {
 	min := []float64{math.MaxFloat64, math.MaxFloat64}
 	max := []float64{-math.MaxFloat64, -math.MaxFloat64}
 	for _, pt := range points {
@@ -201,7 +201,6 @@ func bbEmpty(bb [][]float64) bool {
 }
 
 // Find the bounding box of the intersection of bb with bn.BBox
-// TODO - add equiv to graphics2d/util/boundingbox.go?
 func (bn *BBNode) Intersection(bb [][]float64) [][]float64 {
 	// Test for overlap and emptyness
 	if bb[0][0] > bn.BBox[1][0] || bb[0][1] > bn.BBox[1][1] ||

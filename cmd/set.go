@@ -1,4 +1,5 @@
 //go:build ignore
+
 package main
 
 import (
@@ -31,10 +32,10 @@ func main() {
 	s2 := datastruct.NewSet()
 	ok = s2.Empty()
 	fmt.Printf("Empty %v %v\n", ok, s2)
-	
+
 	s1 = datastruct.NewSet(1, 2, 3, 4, 5)
 	s2 = datastruct.NewSet(4, 5, 6, 7, 8)
-	
+
 	s3 := s1.Union(s2)
 	fmt.Printf("%v Union %v = %v\n", s1, s2, s3)
 

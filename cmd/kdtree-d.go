@@ -1,4 +1,5 @@
 //go:build ignore
+
 package main
 
 import (
@@ -18,15 +19,15 @@ func main() {
 	n := 500
 	pts := make([][]float64, n)
 	for i := 0; i < n; i++ {
-		x := rand.Float64() * 20 - 10
-		y := rand.Float64() * 20 - 10
+		x := rand.Float64()*20 - 10
+		y := rand.Float64()*20 - 10
 		pts[i] = []float64{x, y}
 		kdt.Insert(pts[i])
 	}
 
 	for i := 0; i < 10; i++ {
 		pt := []float64{0, 0}
-		r := float64(i+1)
+		r := float64(i + 1)
 		points, _, _ := kdt.DNN(pt, r*r) // because d metric is squared
 		dump(points, pts, pt, i+1)
 	}

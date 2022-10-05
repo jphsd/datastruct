@@ -1,4 +1,5 @@
 //go:build ignore
+
 package main
 
 import (
@@ -15,8 +16,8 @@ func main() {
 	n := 500
 	pts := make([][]float64, n)
 	for i := 0; i < n; i++ {
-		x := rand.Float64() * 20 - 10
-		y := rand.Float64() * 20 - 10
+		x := rand.Float64()*20 - 10
+		y := rand.Float64()*20 - 10
 		pts[i] = []float64{x, y}
 		kdt.Insert(pts[i])
 	}
@@ -24,8 +25,8 @@ func main() {
 	// Run 10 KNN tests (vs total sort) with k = 20
 	k := 20
 	for i := 0; i < 10; i++ {
-		x := rand.Float64() * 20 - 10
-		y := rand.Float64() * 20 - 10
+		x := rand.Float64()*20 - 10
+		y := rand.Float64()*20 - 10
 		pt := []float64{x, y}
 		fmt.Printf("Round %d: pt %f, %f\n", i, x, y)
 		nnpts, _, inds := kdt.KNN(pt, k)
@@ -60,14 +61,14 @@ func dist(a, b []float64) float64 {
 }
 
 func dumpNode(node *datastruct.KDNode) {
-	for  i := 0; i < node.Depth; i++ {
+	for i := 0; i < node.Depth; i++ {
 		fmt.Print(" ")
 	}
 	fmt.Printf("%d: %f, %f\n", node.Id, node.Point[0], node.Point[1])
 	if node.Left != nil {
 		dumpNode(node.Left)
 	} else {
-		for  i := 0; i < node.Depth+1; i++ {
+		for i := 0; i < node.Depth+1; i++ {
 			fmt.Print(" ")
 		}
 		fmt.Println("<nil>")
@@ -75,7 +76,7 @@ func dumpNode(node *datastruct.KDNode) {
 	if node.Right != nil {
 		dumpNode(node.Right)
 	} else {
-		for  i := 0; i < node.Depth+1; i++ {
+		for i := 0; i < node.Depth+1; i++ {
 			fmt.Print(" ")
 		}
 		fmt.Println("<nil>")

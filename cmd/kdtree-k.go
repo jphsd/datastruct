@@ -1,4 +1,5 @@
 //go:build ignore
+
 package main
 
 import (
@@ -19,8 +20,8 @@ func main() {
 	n := 500
 	pts := make([][]float64, n)
 	for i := 0; i < n; i++ {
-		x := rand.Float64() * 20 - 10
-		y := rand.Float64() * 20 - 10
+		x := rand.Float64()*20 - 10
+		y := rand.Float64()*20 - 10
 		pts[i] = []float64{x, y}
 		kdt.Insert(pts[i])
 	}
@@ -51,8 +52,8 @@ func dump(points, pts [][]float64, pt []float64, n int) {
 	fmt.Printf("Found %d points, expected %d\n", len(points), (n+1)*10)
 
 	last := points[len(points)-1]
-	dx, dy := pt[0] - last[0], pt[1] - last[1]
-	r := math.Sqrt(dx*dx+dy*dy)
+	dx, dy := pt[0]-last[0], pt[1]-last[1]
+	r := math.Sqrt(dx*dx + dy*dy)
 	dShape.AddPaths(g2d.Circle(pt, r))
 
 	g2d.DrawShape(img, oShape, g2d.Black)
