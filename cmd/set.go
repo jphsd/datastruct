@@ -12,19 +12,19 @@ func main() {
 	fmt.Printf("New %v\n", s1)
 
 	ok := s1.Add(10)
-	fmt.Printf("Add %v %v\n", ok, s1)
+	fmt.Printf("Add 10 %v %v\n", ok, s1)
 
 	ok = s1.Add(10)
-	fmt.Printf("Add %v %v\n", ok, s1)
+	fmt.Printf("Add 10 %v %v\n", ok, s1)
 
 	ok = s1.Remove(5)
-	fmt.Printf("Remove %v %v\n", ok, s1)
+	fmt.Printf("Remove 5 %v %v\n", ok, s1)
 
 	ok = s1.Remove(5)
-	fmt.Printf("Remove %v %v\n", ok, s1)
+	fmt.Printf("Remove 5 %v %v\n", ok, s1)
 
 	ok = s1.Element(4)
-	fmt.Printf("Element %v %v\n", ok, s1)
+	fmt.Printf("Element 4 %v %v\n", ok, s1)
 
 	ok = s1.Empty()
 	fmt.Printf("Empty %v %v\n", ok, s1)

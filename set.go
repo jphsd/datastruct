@@ -25,14 +25,15 @@ func (s Set) Add(e int) bool {
 	return false
 }
 
-// Remove removes element e from the set and returns true if it was in the set.
-// Removing a non-existent element is a no-op signified by false.
+// Remove removes element e from the set, if it exists by setting it to false, and returns true if it was in the set.
+// Removing a non-existent element is a no-op signified by false. Use Purge() to actually shrink the set.
 func (s Set) Remove(e int) bool {
-	_, ok := s[e]
-	if !ok {
+	v, ok := s[e]
+	if !ok || !v {
 		return false
 	}
-	delete(s, e)
+	s[e] = false
+	//delete(s, e)
 	return true
 }
 
@@ -43,7 +44,41 @@ func (s Set) Element(e int) bool {
 
 // Empty returns true if the set is the empty set.
 func (s Set) Empty() bool {
-	return len(s) == 0
+	return s.Len() == 0
+}
+
+// Len returns the number of elements in the set.
+func (s Set) Len() int {
+	if len(s) == 0 {
+		return 0
+	}
+	n := 0
+	for _, v := range s {
+		if v {
+			n++
+		}
+	}
+	return n
+}
+
+// Copy makes a copy of the set.
+func (s Set) Copy() Set {
+	res := make(Set)
+	for k, v := range s {
+		if v {
+			res[k] = v
+		}
+	}
+	return res
+}
+
+// Purge clears out removed entries from the set.
+func (s Set) Purge() {
+	for k, v := range s {
+		if !v {
+			delete(s, k)
+		}
+	}
 }
 
 // Union returns a new set containing the union of the set and b (OR).
@@ -78,12 +113,15 @@ func (s Set) Disjoint(b Set) bool {
 
 // String returns a string representation of the set.
 func (s Set) String() string {
-	if len(s) == 0 {
+	if s.Empty() {
 		return "{}"
 	}
 	res := "{"
 	first := true
-	for k := range s {
+	for k, v := range s {
+		if !v {
+			continue
+		}
 		if first {
 			res += fmt.Sprintf("%d", k)
 			first = false
@@ -94,12 +132,15 @@ func (s Set) String() string {
 	return res + "}"
 }
 
-// Slice returns a slice representation of the set.
+// Slice returns an unsorted slice representation of the set.
 func (s Set) Slice() []int {
-	n := len(s)
+	n := s.Len()
 	res := make([]int, n)
 	i := 0
-	for k := range s {
+	for k, v := range s {
+		if !v {
+			continue
+		}
 		res[i] = k
 		i++
 	}
@@ -109,10 +150,16 @@ func (s Set) Slice() []int {
 // Union returns a new set containing the union of a and b (OR).
 func Union(a, b Set) Set {
 	res := make(Set)
-	for e := range a {
+	for e, v := range a {
+		if !v {
+			continue
+		}
 		res[e] = true
 	}
-	for e := range b {
+	for e, v := range b {
+		if !v {
+			continue
+		}
 		res[e] = true
 	}
 	return res
@@ -121,15 +168,21 @@ func Union(a, b Set) Set {
 // Intersection returns a new set containing the intersection of a and b (AND).
 func Intersection(a, b Set) Set {
 	res := make(Set)
-	la, lb := len(a), len(b)
+	la, lb := a.Len(), b.Len()
 	if la < lb {
-		for e := range a {
+		for e, v := range a {
+			if !v {
+				continue
+			}
 			if b[e] {
 				res[e] = true
 			}
 		}
 	} else {
-		for e := range b {
+		for e, v := range b {
+			if !v {
+				continue
+			}
 			if a[e] {
 				res[e] = true
 			}
@@ -142,12 +195,18 @@ func Intersection(a, b Set) Set {
 func Difference(a, b Set) Set {
 	// return Sub(Union(a, b), Intersection(a, b))
 	res := make(Set)
-	for e := range a {
+	for e, v := range a {
+		if !v {
+			continue
+		}
 		if !b[e] {
 			res[e] = true
 		}
 	}
-	for e := range b {
+	for e, v := range b {
+		if !v {
+			continue
+		}
 		if !a[e] {
 			res[e] = true
 		}
@@ -158,7 +217,10 @@ func Difference(a, b Set) Set {
 // Sub returns a new set containing the elements in a which are not in b (SUB).
 func Sub(a, b Set) Set {
 	res := make(Set)
-	for e := range a {
+	for e, v := range a {
+		if !v {
+			continue
+		}
 		if !b[e] {
 			res[e] = true
 		}
@@ -168,7 +230,10 @@ func Sub(a, b Set) Set {
 
 // Contains returns true if b is completely contained in a.
 func Contains(a, b Set) bool {
-	for e := range b {
+	for e, v := range b {
+		if !v {
+			continue
+		}
 		if !a[e] {
 			return false
 		}
@@ -179,15 +244,21 @@ func Contains(a, b Set) bool {
 // Disjoint returns true if a and b share no elements in common.
 func Disjoint(a, b Set) bool {
 	// return Intersection(a, b).Empty()
-	la, lb := len(a), len(b)
+	la, lb := a.Len(), b.Len()
 	if la < lb {
-		for e := range a {
+		for e, v := range a {
+			if !v {
+				continue
+			}
 			if b[e] {
 				return false
 			}
 		}
 	} else {
-		for e := range b {
+		for e, v := range b {
+			if !v {
+				continue
+			}
 			if a[e] {
 				return false
 			}
