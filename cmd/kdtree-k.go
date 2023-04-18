@@ -53,7 +53,7 @@ func dump(points, pts [][]float64, pt []float64, n int) {
 
 	last := points[len(points)-1]
 	dx, dy := pt[0]-last[0], pt[1]-last[1]
-	r := math.Sqrt(dx*dx + dy*dy)
+	r := math.Hypot(dx, dy)
 	dShape.AddPaths(g2d.Circle(pt, r))
 
 	g2d.DrawShape(img, oShape, g2d.Black)

@@ -51,7 +51,7 @@ func (b Bits) Slice() []bool {
 	return res
 }
 
-// BitsFromSlice returns Bits initialized with the contents of the boolean slice 
+// BitsFromSlice returns Bits initialized with the contents of the boolean slice
 func BitsFromSlice(in []bool) Bits {
 	lb := len(in)
 	b := NewBits(lb)

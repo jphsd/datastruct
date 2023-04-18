@@ -144,7 +144,7 @@ func (g *PointGrid) NearestPoint(p []float64) ([]float64, float64, error) {
 			nd = d
 		}
 	}
-	return nearest, math.Sqrt(nd), nil
+	return nearest, math.Hypot(dx, dy), nil
 }
 
 func validateBounds(bounds [][]float64) {
