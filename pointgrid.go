@@ -5,13 +5,13 @@ import (
 	"math"
 )
 
-// PointGrid provides a simple way of finding points that are close to eachother.
+// PointGrid provides a simple way of finding points that are close to each other.
 type PointGrid struct {
 	Rows, Columns int       // Grid cells down and across
 	Min, Max      []float64 // Bounds of the space
 	Wrap          bool      // Whether points should be wrapped in Min, Max
 	w, h, dx, dy  float64
-	grid          [][][][]float64
+	grid          [][][]int
 	n             int
 }
 
@@ -24,9 +24,9 @@ func NewPointGrid(rows, columns int, bounds [][]float64, wrap bool) *PointGrid {
 	if columns < 1 {
 		columns = 1
 	}
-	grid := make([][][][]float64, rows)
+	grid := make([][][]int, rows)
 	for i := 0; i < rows; i++ {
-		grid[i] = make([][][]float64, columns)
+		grid[i] = make([][]int, columns)
 	}
 	w, h := bounds[1][0]-bounds[0][0], bounds[1][1]-bounds[0][1]
 	dx, dy := w/float64(columns), h/float64(rows)
@@ -57,54 +57,41 @@ func (g *PointGrid) Location(p []float64) (int, int, error) {
 	return r, c, nil
 }
 
-// Add adds a point to the appropriate cell and returns its location.
-func (g *PointGrid) Add(p []float64) (int, int, error) {
+// Add adds a point to the appropriate cell and returns its location and index.
+func (g *PointGrid) Add(p []float64) (int, int, int, error) {
 	r, c, err := g.Location(p)
 	if err != nil {
-		return 0, 0, err
+		return 0, 0, -1, err
 	}
 
-	g.grid[r][c] = append(g.grid[r][c], p)
+	n := g.n
+	g.grid[r][c] = append(g.grid[r][c], n)
 	g.n++
-	return r, c, nil
+	return r, c, n, nil
 }
 
 // Cell returns all the points in it.
-func (g *PointGrid) Cell(row, column int) [][]float64 {
-	roffs, coffs := 0.0, 0.0
+func (g *PointGrid) Cell(row, column int) []int {
 	if g.Wrap {
 		if row < 0 {
 			row += g.Rows
-			roffs = -g.h
 		} else if row >= g.Rows {
 			row -= g.Rows
-			roffs = g.h
 		}
 		if column < 0 {
 			column += g.Columns
-			coffs = -g.w
 		} else if column >= g.Columns {
 			column -= g.Columns
-			coffs = g.w
 		}
-		pts := g.grid[row][column]
-		n := len(pts)
-		res := make([][]float64, n)
-		for i := 0; i < n; i++ {
-			// Transform point to wrapped point so distance calcs work
-			res[i] = []float64{pts[i][0] + coffs, pts[i][1] + roffs}
-		}
-		return res
-	}
-	if row < 0 || row >= g.Rows || column < 0 || column >= g.Columns {
-		return [][]float64{}
+	} else if row < 0 || row >= g.Rows || column < 0 || column >= g.Columns {
+		return []int{}
 	}
 	return g.grid[row][column]
 }
 
 // AdjacentCells returns the points of the cell and the cells adjacent to it.
-func (g *PointGrid) AdjacentCells(row, column int) [][]float64 {
-	res := make([][]float64, 0)
+func (g *PointGrid) AdjacentCells(row, column int) []int {
+	res := make([]int, 0)
 	for r := -1; r < 2; r++ {
 		for c := -1; c < 2; c++ {
 			res = append(res, g.Cell(row+r, column+c)...)
@@ -116,35 +103,6 @@ func (g *PointGrid) AdjacentCells(row, column int) [][]float64 {
 // Len returns the number of points stored in the grid.
 func (g *PointGrid) Len() int {
 	return g.n
-}
-
-// NearestPoint looks in the cell containing the point and adjacent cells for the closest point.
-// Returns the point (if any) and its distance or an error. A very poor implementation of nearest neighbor.
-func (g *PointGrid) NearestPoint(p []float64) ([]float64, float64, error) {
-	r, c, err := g.Location(p)
-	if err != nil {
-		return nil, -1, err
-	}
-
-	points := g.AdjacentCells(r, c)
-	np := len(points)
-	if np == 0 {
-		return nil, -1, nil
-	}
-
-	nearest := points[0]
-	px, py := p[0], p[1]
-	dx, dy := points[0][0]-px, points[0][1]-py
-	nd := dx*dx + dy*dy
-	for i := 1; i < np; i++ {
-		dx, dy = points[i][0]-px, points[i][1]-py
-		d := dx*dx + dy*dy
-		if d < nd {
-			nearest = points[i]
-			nd = d
-		}
-	}
-	return nearest, math.Hypot(dx, dy), nil
 }
 
 func validateBounds(bounds [][]float64) {
