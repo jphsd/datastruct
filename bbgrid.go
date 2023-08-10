@@ -82,10 +82,20 @@ func (g *BBGrid) Cell(r, c int) []int {
 	return ids
 }
 
-func (g *BBGrid) Range(bb [][]float64) ([]int, error) {
+func (g *BBGrid) Range(bb [][]float64) []int {
 	validateBounds(bb)
-	if bb[0][0] < g.Min[0] || bb[1][0] > g.Max[0] || bb[0][1] < g.Min[1] || bb[1][1] > g.Max[1] {
-		return nil, fmt.Errorf("bounding box outside of grid bounds")
+	// Clamp search to grid min/max
+	if bb[0][0] < g.Min[0] {
+		bb[0][0] = g.Min[0]
+	}
+	if bb[0][1] < g.Min[1] {
+		bb[0][1] = g.Min[1]
+	}
+	if bb[1][0] < g.Max[0] {
+		bb[1][0] = g.Max[0]
+	}
+	if bb[1][1] < g.Max[1] {
+		bb[1][1] = g.Max[1]
 	}
 	r0, c0 := g.pointToRC(bb[0])
 	r1, c1 := g.pointToRC(bb[1])
@@ -102,7 +112,7 @@ func (g *BBGrid) Range(bb [][]float64) ([]int, error) {
 	for k, _ := range idm {
 		res = append(res, k)
 	}
-	return res, nil
+	return res
 }
 
 func (g *BBGrid) Len() int {
