@@ -14,6 +14,7 @@ type BBGrid struct {
 }
 
 func NewBBGrid(r, c int, bb [][]float64) *BBGrid {
+	bb = bbcopy(bb)
 	validateBounds(bb)
 	dx, dy := bb[1][0]-bb[0][0], bb[1][1]-bb[0][1]
 	dx /= float64(c)
@@ -30,6 +31,7 @@ func (g *BBGrid) Add(id int, bb [][]float64) error {
 	if id < 0 {
 		return fmt.Errorf("id less than zero")
 	}
+	bb = bbcopy(bb)
 	validateBounds(bb)
 	if bb[1][0] < g.Min[0] || bb[0][0] > g.Max[0] || bb[1][1] < g.Min[1] || bb[0][1] > g.Max[1] {
 		return fmt.Errorf("bounds don't overlap grid")
@@ -83,6 +85,7 @@ func (g *BBGrid) Cell(r, c int) []int {
 }
 
 func (g *BBGrid) Range(bb [][]float64) []int {
+	bb = bbcopy(bb)
 	validateBounds(bb)
 	// Clamp search to grid min/max
 	if bb[0][0] < g.Min[0] {
@@ -91,10 +94,10 @@ func (g *BBGrid) Range(bb [][]float64) []int {
 	if bb[0][1] < g.Min[1] {
 		bb[0][1] = g.Min[1]
 	}
-	if bb[1][0] < g.Max[0] {
+	if bb[1][0] > g.Max[0] {
 		bb[1][0] = g.Max[0]
 	}
-	if bb[1][1] < g.Max[1] {
+	if bb[1][1] > g.Max[1] {
 		bb[1][1] = g.Max[1]
 	}
 	r0, c0 := g.pointToRC(bb[0])
@@ -136,4 +139,8 @@ func (g *BBGrid) pointToRC(p []float64) (int, int) {
 		r = g.Rows - 1
 	}
 	return r, c
+}
+
+func bbcopy(bb [][]float64) [][]float64 {
+	return [][]float64{{bb[0][0], bb[0][1]}, {bb[1][0], bb[1][1]}}
 }
