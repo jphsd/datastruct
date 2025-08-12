@@ -4,6 +4,11 @@ package datastruct
 type PriorityItem struct {
 	Priority float64
 	Id       int
+	index    int // location in list or -1
+}
+
+func NewPriorityItem(pri float64, id int) PriorityItem {
+	return PriorityItem{Priority: pri, Id: id, index: -1}
 }
 
 // PriorityList holds the prioritized list of items. The lower the priority, the closer to the start
@@ -20,6 +25,11 @@ func NewPriorityList(items ...PriorityItem) *PriorityList {
 	return res
 }
 
+// Slice returns the priority item slice
+func (pq *PriorityList) Slice() []PriorityItem {
+	return (*pq)[:]
+}
+
 // Insert inserts the item into the list at the correct point and returns that insertion point.
 // Insertion is performed using a binary search and copy() for speed.
 func (pq *PriorityList) Insert(v PriorityItem) int {
@@ -30,6 +40,7 @@ func (pq *PriorityList) Insert(v PriorityItem) int {
 	}
 	n := len(*pq)
 	res := pq.helper(v.Priority, 0, n-1, false)
+	v.index = res
 	if res == n {
 		// Insert at end
 		*pq = append(*pq, v)
@@ -42,24 +53,23 @@ func (pq *PriorityList) Insert(v PriorityItem) int {
 	return res
 }
 
+// ChangedPriority must be called for any item that changes priority.
+// The new location is returned.
+func (pq *PriorityList) ChangedPriority(v PriorityItem) int {
+	if v.index != -1 {
+		pq.DeleteEntry(v.index)
+	}
+	return pq.Insert(v)
+}
+
 // Delete removes the entry in the list with the item (if found) and returns true. If the item isn't
 // then false is returned. The priority value in the item is used to find where the item occurs in the
 // list.
 func (pq *PriorityList) Delete(v PriorityItem) bool {
-	n := len(*pq)
-	res := pq.helper(v.Priority, 0, n-1, false)
-	if res == n {
+	if v.index == -1 {
 		return false
 	}
-	for i := res; i >= 0; i-- {
-		if (*pq)[i].Id == v.Id {
-			return pq.DeleteEntry(i)
-		}
-		if (*pq)[i].Priority < v.Priority {
-			break
-		}
-	}
-	return false
+	return pq.DeleteEntry(v.index)
 }
 
 // DeleteId removes the entry in the list with the item id (if found) and returns true. If the id

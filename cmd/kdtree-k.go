@@ -56,8 +56,8 @@ func dump(points, pts [][]float64, pt []float64, n int) {
 	r := math.Hypot(dx, dy)
 	dShape.AddPaths(g2d.Circle(pt, r))
 
-	g2d.DrawShape(img, oShape, g2d.Black)
-	g2d.DrawShape(img, dShape, g2d.Red)
+	g2d.DrawShape(img, oShape, g2d.BlackPen)
+	g2d.DrawShape(img, dShape, g2d.RedPen)
 
 	image.SaveImage(img, fmt.Sprintf("kdtreek-%d", n))
 }

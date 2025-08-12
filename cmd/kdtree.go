@@ -44,7 +44,7 @@ func nearest(pt []float64, pts [][]float64) [][]float64 {
 	n := len(pts)
 	pis := make([]datastruct.PriorityItem, n)
 	for i, p := range pts {
-		pis[i] = datastruct.PriorityItem{dist(pt, p), i}
+		pis[i] = datastruct.NewPriorityItem(dist(pt, p), i)
 	}
 	pq := datastruct.NewPriorityList(pis...)
 	res := make([][]float64, n)

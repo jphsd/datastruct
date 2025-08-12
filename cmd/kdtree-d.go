@@ -53,8 +53,8 @@ func dump(points, pts [][]float64, pt []float64, n int) {
 	rp = xfm.Apply(rp)[0]
 	dShape.AddPaths(g2d.Circle(pt, rp[0]-float64(width)/2))
 
-	g2d.DrawShape(img, oShape, g2d.Black)
-	g2d.DrawShape(img, dShape, g2d.Red)
+	g2d.DrawShape(img, oShape, g2d.BlackPen)
+	g2d.DrawShape(img, dShape, g2d.RedPen)
 
 	image.SaveImage(img, fmt.Sprintf("kdtreed-%d", n))
 }

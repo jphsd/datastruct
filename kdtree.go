@@ -167,12 +167,13 @@ func (t *KDTree) KNN(pt []float64, k int) ([][]float64, []float64, []int) {
 
 	pq := NewPriorityList()
 	t.knnHelper(pt, k, t.Root, 0, pq)
+	q := pq.Slice()
 
-	for i := 0; i < k && i < len(*pq); i++ {
-		id := (*pq)[i].Id
+	for i := 0; i < k && i < len(q); i++ {
+		id := q[i].Id
 		inds = append(inds, id)
 		res = append(res, t.Nodes[id].Point)
-		ds = append(ds, (*pq)[i].Priority)
+		ds = append(ds, q[i].Priority)
 	}
 
 	return res, ds, inds
@@ -203,7 +204,7 @@ func (t *KDTree) knnHelper(pt []float64, k int, node *KDNode, axis int, pq *Prio
 		dist := t.Dist(pt, curr.Point)
 		checked := kthDistance(pq, k-1)
 		if dist < checked {
-			pq.Insert(PriorityItem{dist, curr.Id})
+			pq.Insert(NewPriorityItem(dist, curr.Id))
 			checked = kthDistance(pq, k-1)
 		}
 
@@ -233,12 +234,13 @@ func (t *KDTree) DNN(pt []float64, d float64) ([][]float64, []float64, []int) {
 
 	pq := NewPriorityList()
 	t.dnnHelper(pt, d, t.Root, 0, pq)
+	q := pq.Slice()
 
-	for i := 0; i < len(*pq) && (*pq)[i].Priority <= d; i++ {
-		id := (*pq)[i].Id
+	for i := 0; i < len(q) && q[i].Priority <= d; i++ {
+		id := q[i].Id
 		inds = append(inds, id)
 		res = append(res, t.Nodes[id].Point)
-		dists = append(dists, (*pq)[i].Priority)
+		dists = append(dists, q[i].Priority)
 	}
 
 	return res, dists, inds
@@ -268,7 +270,7 @@ func (t *KDTree) dnnHelper(pt []float64, d float64, node *KDNode, axis int, pq *
 	for path, curr = last(path); curr != nil; path, curr = last(path) {
 		dist := t.Dist(pt, curr.Point)
 		if dist <= d {
-			pq.Insert(PriorityItem{dist, curr.Id})
+			pq.Insert(NewPriorityItem(dist, curr.Id))
 		}
 
 		// check other side of plane
@@ -302,10 +304,11 @@ func (t *KDTree) planeDist(pt, cur []float64, axis int) float64 {
 }
 
 func kthDistance(pq *PriorityList, k int) float64 {
-	if len(*pq) <= k {
+	q := pq.Slice()
+	if len(q) <= k {
 		return math.MaxFloat64
 	}
-	return (*pq)[k].Priority
+	return q[k].Priority
 }
 
 type KDNode struct {

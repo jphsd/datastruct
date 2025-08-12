@@ -9,18 +9,18 @@ import (
 
 func main() {
 	l := datastruct.NewPriorityList()
-	l.Insert(datastruct.PriorityItem{10, 1})
-	l.Insert(datastruct.PriorityItem{9, 2})
-	l.Insert(datastruct.PriorityItem{8, 3})
-	l.Insert(datastruct.PriorityItem{7, 4})
-	l.Insert(datastruct.PriorityItem{6, 5})
-	for i, itm := range *l {
+	l.Insert(datastruct.NewPriorityItem(10, 1))
+	l.Insert(datastruct.NewPriorityItem(9, 2))
+	l.Insert(datastruct.NewPriorityItem(8, 3))
+	l.Insert(datastruct.NewPriorityItem(7, 4))
+	l.Insert(datastruct.NewPriorityItem(6, 5))
+	for i, itm := range l.Slice() {
 		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
 	}
-	fmt.Printf("at %d\n", l.Insert(datastruct.PriorityItem{8, 6}))
-	fmt.Printf("at %d\n", l.Insert(datastruct.PriorityItem{8, 7}))
-	fmt.Printf("at %d\n", l.Insert(datastruct.PriorityItem{8, 8}))
-	for i, itm := range *l {
+	fmt.Printf("at %d\n", l.Insert(datastruct.NewPriorityItem(8, 6)))
+	fmt.Printf("at %d\n", l.Insert(datastruct.NewPriorityItem(8, 7)))
+	fmt.Printf("at %d\n", l.Insert(datastruct.NewPriorityItem(8, 8)))
+	for i, itm := range l.Slice() {
 		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
 	}
 
@@ -31,12 +31,19 @@ func main() {
 		fmt.Printf("where %d left %d\n", i, l.Where(float64(i), true))
 	}
 
-	l.Delete(datastruct.PriorityItem{7, 4})
-	for i, itm := range *l {
+	l.Delete(datastruct.NewPriorityItem(7, 4))
+	for i, itm := range l.Slice() {
 		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
 	}
-	l.Delete(datastruct.PriorityItem{8, 8})
-	for i, itm := range *l {
+	l.Delete(datastruct.NewPriorityItem(8, 8))
+	for i, itm := range l.Slice() {
+		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
+	}
+
+	pi := (*l)[4]
+	pi.Priority -= 1
+	l.ChangedPriority(pi)
+	for i, itm := range l.Slice() {
 		fmt.Printf("%d: Pri %f Id %d\n", i, itm.Priority, itm.Id)
 	}
 }
