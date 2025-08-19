@@ -30,6 +30,16 @@ func (pq *PriorityList) Slice() []PriorityItem {
 	return (*pq)[:]
 }
 
+func (pq *PriorityList) Pop() PriorityItem {
+	pi := (*pq)[0]
+	*pq = (*pq)[1:]
+	for i := range *pq {
+		//(*pq)[i].index--
+		(*pq)[i].index = i
+	}
+	return pi
+}
+
 // Insert inserts the item into the list at the correct point and returns that insertion point.
 // Insertion is performed using a binary search and copy() for speed.
 func (pq *PriorityList) Insert(v PriorityItem) int {
@@ -48,8 +58,12 @@ func (pq *PriorityList) Insert(v PriorityItem) int {
 	}
 	// Insert at res
 	*pq = append(*pq, PriorityItem{})
-	copy((*pq)[res+1:], (*pq)[res:]) // copy up
+	copy((*pq)[res+1:], (*pq)[res:]) // copy down
 	(*pq)[res] = v
+	for i := res + 1; i < n+1; i++ {
+		//(*pq)[i].index++
+		(*pq)[i].index = i
+	}
 	return res
 }
 
@@ -63,11 +77,14 @@ func (pq *PriorityList) ChangedPriority(v PriorityItem) int {
 }
 
 // Delete removes the entry in the list with the item (if found) and returns true. If the item isn't
-// then false is returned. The priority value in the item is used to find where the item occurs in the
-// list.
+// then false is returned.
 func (pq *PriorityList) Delete(v PriorityItem) bool {
 	if v.index == -1 {
 		return false
+	}
+	if (*pq)[v.index].Id != v.Id {
+		// CYA
+		return pq.DeleteId(v.Id)
 	}
 	return pq.DeleteEntry(v.index)
 }
@@ -92,10 +109,18 @@ func (pq *PriorityList) DeleteEntry(e int) bool {
 	}
 	if e == 0 {
 		*pq = (*pq)[1:]
+		for i := range *pq {
+			//(*pq)[i].index--
+			(*pq)[i].index = i
+		}
 		return true
 	}
 	if e < n-1 {
-		copy((*pq)[e:], (*pq)[e+1:]) // copy down
+		copy((*pq)[e:], (*pq)[e+1:]) // copy up
+	}
+	for i := e + 1; i < n-1; i++ {
+		//(*pq)[i].index--
+		(*pq)[i].index = i
 	}
 	*pq = (*pq)[:n-1] // shrink
 	return true
