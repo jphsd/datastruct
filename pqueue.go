@@ -30,7 +30,7 @@ func (pq *PriorityQueue) Len() int {
 	return len(pq.items)
 }
 
-// Insert a new id with priority or change the priority of an existin id
+// Insert a new id with priority or change the priority of an existing id
 func (pq *PriorityQueue) Insert(id int, pri float64) {
 	itm, ok := pq.id2itm[id]
 	if ok {
@@ -45,7 +45,7 @@ func (pq *PriorityQueue) Insert(id int, pri float64) {
 	heap.Push(&pq.items, itm)
 }
 
-// Pop returns the lowest priority id and remoes it from the queue
+// Pop returns the lowest priority id and removes it from the queue
 func (pq *PriorityQueue) Pop() (int, error) {
 	if len(pq.items) == 0 {
 		return 0, ErrEmpty
@@ -62,7 +62,7 @@ func (pq *PriorityQueue) Pop() (int, error) {
 type pqitem struct {
 	id       int
 	priority float64 // The priority of the item in the queue.
-	index    int     // Location of this tiem for heap.Fix()
+	index    int     // Location of this item for heap.Fix()
 }
 
 type minQueue []*pqitem
