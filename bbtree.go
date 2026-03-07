@@ -60,6 +60,14 @@ func (bt *BBTree) Flatten() [][][]float64 {
 	return bt.Root.Flatten()
 }
 
+func (bt *BBTree) LeavesAsBBN() []*BBNode {
+	return bt.Root.LeavesAsBBN()
+}
+
+func (bt *BBTree) FlattenAsBBN() []*BBNode {
+	return bt.Root.FlattenAsBBN()
+}
+
 type BBNode struct {
 	Id       int
 	Depth    int
@@ -195,7 +203,7 @@ func sliceInY(y float64, bb [][]float64) ([][]float64, [][]float64) {
 }
 
 func bbEmpty(bb [][]float64) bool {
-	return bb[0][0] > bb[1][0] || bb[0][1] > bb[1][1] ||
+	return bb == nil || bb[0][0] > bb[1][0] || bb[0][1] > bb[1][1] ||
 		Within(bb[0][0], bb[1][0], 0.000001) || Within(bb[0][1], bb[1][1], 0.000001)
 }
 
@@ -259,36 +267,52 @@ func (bn *BBNode) Contains(pt []float64) bool {
 }
 
 func (bn *BBNode) Leaves() [][][]float64 {
+	return bbnToBB(bn.LeavesAsBBN())
+}
+
+func (bn *BBNode) LeavesAsBBN() []*BBNode {
 	if len(bn.Children) == 0 {
 		if bn.Id == -1 {
 			// Exclude ones that extend to infinity
 			return nil
 		}
-		return [][][]float64{bn.BBox}
+		return []*BBNode{bn}
 	}
 
-	res := [][][]float64{}
+	res := []*BBNode{}
 	for _, child := range bn.Children {
-		res = append(res, child.Leaves()...)
+		res = append(res, child.LeavesAsBBN()...)
 	}
 	return res
 }
 
 func (bn *BBNode) Flatten() [][][]float64 {
+	return bbnToBB(bn.FlattenAsBBN())
+}
+
+func (bn *BBNode) FlattenAsBBN() []*BBNode {
 	if len(bn.Children) == 0 {
 		if bn.Id == -1 {
 			// Exclude ones that extend to infinity
 			return nil
 		}
-		return [][][]float64{bn.BBox}
+		return []*BBNode{bn}
 	}
 
-	res := [][][]float64{}
+	res := []*BBNode{}
 	if bn.Id != -1 {
-		res = append(res, bn.BBox)
+		res = append(res, bn)
 	}
 	for _, child := range bn.Children {
-		res = append(res, child.Flatten()...)
+		res = append(res, child.FlattenAsBBN()...)
+	}
+	return res
+}
+
+func bbnToBB(bns []*BBNode) [][][]float64 {
+	res := make([][][]float64, len(bns))
+	for i, bn := range bns {
+		res[i] = bn.BBox
 	}
 	return res
 }
