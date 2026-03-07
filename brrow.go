@@ -81,10 +81,7 @@ func (g *BRRow) Len() int {
 
 func (g *BRRow) pointToC(p float64) int {
 	// Bounds check already performed
-	c := (int)(math.Floor((p - g.Min) / g.dx))
-	if c < 0 {
-		c = 0
-	}
+	c := max((int)(math.Floor((p-g.Min)/g.dx)), 0)
 	if c >= g.Columns {
 		c = g.Columns - 1
 	}

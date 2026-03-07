@@ -20,7 +20,7 @@ func NewBBGrid(r, c int, bb [][]float64) *BBGrid {
 	dx /= float64(c)
 	dy /= float64(r)
 	grid := make([][][]int, r)
-	for i := 0; i < r; i++ {
+	for i := range r {
 		grid[i] = make([][]int, c)
 	}
 	bbg := &BBGrid{r, c, bb[0], bb[1], dx, dy, grid, 0}

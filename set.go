@@ -1,5 +1,7 @@
 package datastruct
 
+import "strings"
+
 import "fmt"
 
 // Set represents a set of integer elements.
@@ -116,20 +118,21 @@ func (s Set) String() string {
 	if s.Empty() {
 		return "{}"
 	}
-	res := "{"
+	var res strings.Builder
+	res.WriteString("{")
 	first := true
 	for k, v := range s {
 		if !v {
 			continue
 		}
 		if first {
-			res += fmt.Sprintf("%d", k)
+			res.WriteString(fmt.Sprintf("%d", k))
 			first = false
 		} else {
-			res += fmt.Sprintf(", %d", k)
+			res.WriteString(fmt.Sprintf(", %d", k))
 		}
 	}
-	return res + "}"
+	return res.String() + "}"
 }
 
 // Slice returns an unsorted slice representation of the set.

@@ -37,10 +37,10 @@ func (b Bits) Slice() []bool {
 	lw := len(b)
 	res := make([]bool, lw*64)
 	ip := 0
-	for i := 0; i < lw; i++ {
+	for i := range lw {
 		word := b[i]
 		mask := uint64(1)
-		for j := 0; j < 64; j++ {
+		for range 64 {
 			if (word & mask) != 0 {
 				res[ip] = true
 			}
@@ -58,10 +58,10 @@ func BitsFromSlice(in []bool) Bits {
 	// Do it in chunks of 64
 	n := lb / 64
 	ip := 0
-	for i := 0; i < n; i++ {
+	for i := range n {
 		var word uint64
 		mask := uint64(1)
-		for j := 0; j < 64; j++ {
+		for range 64 {
 			if in[ip] {
 				word |= mask
 			}
