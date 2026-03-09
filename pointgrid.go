@@ -92,7 +92,11 @@ func (g *PointGrid) Cell(row, column int) [][]float64 {
 		res := make([][]float64, n)
 		for i := range n {
 			// Transform point to wrapped point so distance calcs work
-			res[i] = []float64{pts[i][0] + coffs, pts[i][1] + roffs}
+			v := make([]float64, len(pts[i]))
+			copy(v, pts[i])
+			v[0] += coffs
+			v[1] += roffs
+			res[i] = v
 		}
 		return res
 	}

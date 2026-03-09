@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 )
 
 type KDTree struct {
@@ -320,16 +321,17 @@ type KDNode struct {
 }
 
 func (n *KDNode) String() string {
-	res := "{"
+	var res strings.Builder
+	res.WriteString("{")
 	// res := fmt.Sprintf("{%d: ", n.Depth)
 	for i, v := range n.Point {
 		if i == 0 {
-			res += fmt.Sprintf("%f", v)
+			res.WriteString(fmt.Sprintf("%f", v))
 		} else {
-			res += fmt.Sprintf(", %f", v)
+			res.WriteString(fmt.Sprintf(", %f", v))
 		}
 	}
-	return res + "}"
+	return res.String() + "}"
 }
 
 func (n *KDNode) Points() [][]float64 {
