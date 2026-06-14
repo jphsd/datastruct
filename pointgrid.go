@@ -53,7 +53,15 @@ func (g *PointGrid) Location(p []float64) (int, int, error) {
 		return 0, 0, fmt.Errorf("point out of range: %f,%f {%f,%f, %f,%f}", p[0], p[1], g.Min[0], g.Min[1], g.Max[0], g.Max[1])
 	}
 	c := int(math.Floor((x - g.Min[0]) / g.dx))
+	if c == g.Columns {
+		// On the boundary
+		c--
+	}
 	r := int(math.Floor((y - g.Min[1]) / g.dy))
+	if r == g.Rows {
+		// On the boundary
+		r--
+	}
 	return r, c, nil
 }
 
